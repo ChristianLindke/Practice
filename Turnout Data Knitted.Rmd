@@ -1,0 +1,81 @@
+---
+title: "Imai Causality Chapter"
+author: "Christian Lindke"
+date: "5/6/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r turnout}
+## Install qss
+
+#install.packages("qss")
+#library(qss)
+#library(readr)
+
+## Bring Turnout Data into Global Environment
+
+data("turnout", package = "qss")
+
+```
+
+It is also very easy to make tables with knitr's `kable` function:
+
+```{r turnouttable, echo = FALSE, results='asis'}
+library(knitr)
+kable(turnout, caption = "A knitr kable of turnout data.")
+```
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+numfelons <- turnout$felons
+elecyear <- turnout$year
+plot(y = numfelons, x = elecyear)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+Now it is time to load the RESUME data to work on Imai's Chapter 2
+
+```{r resume}
+data("resume", package = "qss")
+
+dim(resume)
+head(resume)
+summary(resume)
+```
+
+Now that we've loaded the data, let's take a look at its head as a `kable`:
+
+
+```{r resumeinfo, echo = FALSE, results = 'asis'}
+resume2 <- head(resume)
+kable(resume2, caption = "This knitr kable shows some resume data from Imai's QSS Examples")
+
+```
+
+Now let's load some Arsalyn Data!
+
+```{r arsalyn, echo=FALSE}
+arsalyn1 <- read.csv("https://raw.githubusercontent.com/ChristianLindke/datasharing/master/2020%20Primary%20Election%20Ballot%20Verified%20Results%20duplicated%20deleted%20Comma.csv")
+
+arsalyn2 <- head(arsalyn1[,2:9])
+
+kable(arsalyn2, caption = "This is a table using Arsalyn Data")
+
+```
+
+
