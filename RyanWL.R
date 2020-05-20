@@ -11,11 +11,20 @@
 
 RyanData <- read.csv("https://raw.githubusercontent.com/ChristianLindke/Practice/master/Nolan%20Ryan%20Comma.csv")
 
+RyanData
+
 ## Let's look at the Head, Tail, and do a Summary
 head(RyanData)
 tail(RyanData)
 
 summary(RyanData)
+
+colnames(RyanData)
+
+RyanDataNice <- RyanData[ , c(1,2,3,5,6,7,8,9,10,11,12,13,14,15,16,17)]
+
+length(RyanData)
+RyanDataEarly <- RyanData[3:12, c(1,2,3,5,6,7,8,9,10,11,12,13,14,15,16,17)]
 
 ## The Variables of interest here are:
 ## W.L.: Nolan Ryan's Win/Loss Percentage
@@ -24,6 +33,15 @@ summary(RyanData)
 
 RyanWL <- RyanData$W.L.
 RestOfTeamWL <- RyanData$StarterWL.ExclRyan 
+BestStarter <- RyanData$BestStarterWL
+
+## We've Done Whole Career, So let's do late career.
+
+RyanDataEarlyWL <- RyanDataEarly$W.L.
+RestOfTeamEarly <- RyanDataEarly$StarterWL.ExclRyan
+BestStarterEarly <- RyanDataEarly$BestStarterWL
+
+## Let's get the means for whole career.
 
 MeanRyan <- mean(RyanWL)
 SDRyan <- sd(RyanWL)
@@ -31,7 +49,38 @@ SDRyan <- sd(RyanWL)
 MeanTeams <- mean(RestOfTeamWL)
 SDTeams <- sd(RestOfTeamWL)
 
+MeanBest <- mean(BestStarter)
+SDBest <- sd(MeanBest)
+
+
+## Means for Early Career
+
+MeanRyanEarly <- mean(RyanDataEarlyWL)
+SDRyanEarly <- sd(MeanRyanEarly)
+
+MeanTeamsEarly <- mean(RestOfTeamEarly)
+SDTeamsEarly <- sd(MeanTeamsEarly)
+
+MeanBestEarly <- mean(BestStarterEarly)
+SDBestEarly <- sd(MeanBestEarly)
+
+
+sum(RyanData$W)
+sum(RyanData$L)
+
+RyanData$W/(RyanData$W + RyanData$L)
+
+## T-Test vs. Average Team Starter
+
 t.test(RyanWL, RestOfTeamWL)
+
+## Early in Career?
+
+t.test(RyanDataEarlyWL, RestOfTeamEarly)
+
+## T-Test vs. Best Team Starter
+
+t.test(RyanWL, BestStarter)
 
 ## From this we see that Ryan's Win/Loss Average Was Worse than Team Average,
 ## but was not statistically significant in its difference.
@@ -41,18 +90,22 @@ t.test(RyanWL, RestOfTeamWL)
 
 Ryan_Career <- mean(RyanWL)
 Team_Career <- mean(RestOfTeamWL)
+Best_Career <- mean(BestStarter)
 
 Ryan_Comparison <- data.frame(
-  name=c("Ryan Career W/L %", "Rest of Team W/L %"),
-  value=c(Ryan_Career, Team_Career),
-  sd=c(SDRyan, SDTeams)
+  Comparison=c("Ryan Career W/L %", "Rest of Team W/L %", "Best of Team W/L %"),
+  Percentage=c(Ryan_Career, Team_Career, Best_Career),
+  sd=c(SDRyan, SDTeams, SDBest)
 )
 
-ggplot(Ryan_Comparison) +
-  geom_bar( aes(x=name, y=value), stat="identity", fill="darkblue", alpha=0.7) +
-  geom_errorbar( aes(x=name, ymin=value-sd, ymax=value+sd), width=0.4, colour="orange", alpha=0.9, size=1.3)
+library(ggplot2)
 
 
 ggplot(Ryan_Comparison) +
-  geom_bar( aes(x=name, y=value), stat="identity", fill="darkblue", width = 0.25, alpha=0.5) +
-  geom_pointrange( aes(x=name, y=value, ymin=value-sd, ymax=value+sd), colour="orange", alpha=0.9, size=1.3)
+  geom_bar( aes(x=Comparison, y=Percentage), stat="identity", fill="darkblue", alpha=0.7) +
+  geom_errorbar( aes(x=Comparison, ymin=Percentage-sd, ymax=Percentage+sd), width=0.4, colour="orange", alpha=0.9, size=1.3)
+
+
+ggplot(Ryan_Comparison) +
+  geom_bar( aes(x=Comparison, y=Percentage), stat="identity", fill="darkblue", width = 0.25, alpha=0.5) +
+  geom_pointrange( aes(x=Comparison, y=Percentage, ymin=Percentage-sd, ymax=Percentage+sd), colour="orange", alpha=0.9, size=1.3)
